@@ -1,8 +1,30 @@
-! [] (https://imgur.com/a/zJ6fj5P)
+![] (https://imgur.com/a/zJ6fj5P.png)
+
 # <h1 align="center"> HolbertonBnB </h1>
 # <p align="center"> An AirBnB clone </p>
 This project is to provide hands-on experience in building a full web application, including backend logic, data modeling, command-line interfaces, and possibly front-end components. It also helps in understanding concepts like HTML/CSS templating, database storage, API, front-end integration…
-![](https://imgur.com/a/UGH6KHl)
+
+![](https://imgur.com/a/UGH6KHl.png)
+
+## 🛠️ Console Setup
+1. Clone this git repository
+
+```bash
+git clone https://github.com/CarmenLeila/holbertonschool-AirBnB_clone.git
+cd holbertonschool-AirBnB_clone
+```
+2. You can now use the command interpreter
+
+```bash
+./console
+```
+3. If all is good, the following prompt should appear
+
+```bash
+(hbtn)
+```
+4. You can now use it as you want. The commands available are detailed below, in the "*Commands*" category.
+
 # Learning Objectives
 ## General
 * How to create a Python package
