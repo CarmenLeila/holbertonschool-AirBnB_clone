@@ -38,47 +38,60 @@ class HBNBCommand(cmd.Cmd):
         print("Get help on commands.")
     def do_create(self, line):
         """Creates a new instance of BaseModel,saves it"""
-        if not line:
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.review import Review
+
+        a_classes = {"BaseModel": BaseModel, "User": User, "State": State,
+                     "City": City, "Amenity": Amenity, "Place": Place,
+                     "Review": Review}
+        args = line.split()
+
+        if len(args) == 0:
             print("** class name missing **")
-            return
-
-        args = shlex.split(line)
-        class_name = args[0]
-
-        if class_name not in models.classes:
+        elif args[0] not in a_classes:
             print("** class doesn't exist **")
-            return
-
-        instance = getattr(models, class_name)()
-        instance.save()
-        print(instance.id)
+        else:
+            new_instance = a_classes[args[0]]()
+            new_instance.save()
+            print(new_instance.id)
 
     def do_show(self, line):
         """Prints the string representation of an instance based on the class name and ID"""
-        if not line:
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.review import Review
+
+        a_classes = {"BaseModel": BaseModel, "User": User, "State": State,
+                     "City": City, "Amenity": Amenity, "Place": Place,
+                     "Review": Review}
+        args = line.split()
+        if len(args) == 0:
             print("** class name missing **")
             return
-
-        args = shlex.split(line)
-
-        if len(args) < 2:
-            print("** instance id missing **")
-            return
-
-        class_name = args[0]
-        instance_id = args[1]
-
-        if class_name not in models.classes:
+        elif args[0] not in a_classes.keys():
             print("** class doesn't exist **")
             return
-
-        all_objects = models.storage.all()
-        key = "{}.{}".format(class_name, instance_id)
-
-        if key not in all_objects:
-            print("** no instance found **")
+        elif len(args) < 2:
+            print("** instance id missing **")
             return
-        print(all_objects[key])
+        else:
+            keys = storage.all().keys()
+            key = args[0] + '.' + args[1]
+            if key not in keys:
+                print("** no instance found **")
+                return
+            objs = storage.all()
+            instance = objs[key]
+            print(str(instance))
 
     def do_destroy(self, line):
         """Deletes an instance based on a class name + ID"""
