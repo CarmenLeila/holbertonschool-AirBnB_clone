@@ -10,6 +10,7 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
+import os
 
 
 class FileStorage():
@@ -34,16 +35,22 @@ class FileStorage():
         """ fill dictionary with elements __objects """
         for key, value in self.__objects.items():
             json_object[key] = value.to_dict()
-        with open(self.__file_path, 'w' , encoding = 'utf-8') as file:
-            json.dump(json_object, file, indent=4)
+        try:
+            with open(self.__file_path, 'w' , encoding = 'utf-8') as file:
+                json.dump(json_object, file, indent=4)
+        except Exception:
+            pass
 
     def reload(self):
         """ deserializes the JSON file to __objects """
+        if not os.path.exists(self.__file_path) or
+            os.path.getsize(self.__file_path):
+            return
         try:
             with open(self.__file_path, "r", encoding='utf-8') as file:
                 data = json.load(file)
                 for key, value in data.items():
-                    class_name, obj_id = key.split(".")
+                    class_name = key.split(".")[0]
                     instance = eval(class_name)(**value)
                     self.__objects[key] = instance
         except FileNotFoundError:
