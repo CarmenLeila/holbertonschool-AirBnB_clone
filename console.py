@@ -89,7 +89,7 @@ class HBNBCommand(cmd.Cmd):
         elif len(args) == 1:
             print("** instance id missing **")
             return
-        elif args [0] not in self.classes:
+        elif len(args) not in models.classes:
             print("** class doesn't exist **")
             return
         else:
@@ -104,30 +104,21 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, line):
         """Prints all string representation of all instances based or not on the class name"""
-        args = shlex.split(line)
-        list = []
-        dict = models.storage.all()
-        # show all if no class is passed
-        if len(args) == 0:
-            for key in dict:
-                representation_Class = str(dict[key])
-                list.append(representation_Class)
-            # if list:
-            print(list)
-            return
-        if args[0] not in self.classes:
-            print("** class doesn't exist **")
-            return
+        all_objects = models.storage.all()
+
+        if not line:
+            print([str(instance) for instance in all_objects.values()])
         else:
-            # Representation for a specific class
-            representation_Class = ""
-            for key in dict:
-                className = key.split('.')
-                if className[0] == args[0]:
-                    representation_Class = str(dict[key])
-                    list.append(representation_Class)
-            # if list:
-            print(list)
+            args = shlex.split(line)
+            class_name = args[0]
+
+            if class_name not in models.classes:
+                print("** class doesn't exist **")
+                return
+
+            for instance in all_objects.values():
+                if type(instance).__name__ == class_name:
+                    print(str(instance))
 
     def do_update(self, line):
         """Updates an instance based on the class name and id by adding or updating attribute"""
@@ -203,6 +194,8 @@ class HBNBCommand(cmd.Cmd):
 
 
     def default(self, line):
+        """default error message"""
+
         print(f"*** Unknown syntax: {line}")
 
 if __name__ == '__main__':
