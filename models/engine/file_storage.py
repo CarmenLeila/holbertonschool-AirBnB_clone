@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ Defines FileStorage class """
+# file_storage.py
 
 import json
 from models.base_model import BaseModel
@@ -51,7 +52,7 @@ class FileStorage():
                 data = json.load(file)
                 for key, value in data.items():
                     class_name, obj_id = key.split(".")
-                    class_instance = self.supported_classes(class_name)
+                    class_instance = self.supported_classes.get(class_name)
                     if class_instance:
                         instance = class_instance(**value)
                         self.__objects[key] = instance

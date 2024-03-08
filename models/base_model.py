@@ -34,6 +34,9 @@ class BaseModel:
     def save(self):
         """ Updates the public instance """
         self.updated_at = datetime.utcnow()
+        from models import storage
+        storage.save()
+        
     def to_dict(self):
         """ Returns an instance dictionary """
         instance_dict = self.__dict__.copy()
