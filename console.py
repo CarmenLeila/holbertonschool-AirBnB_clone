@@ -122,36 +122,57 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, line):
         """Updates an instance based on the class name and id by adding or updating attribute"""
-        argsU = shlex.split(line)
-        if len(argsU) == 0:
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.review import Review
+
+        a_classes = {"BaseModel": BaseModel, "User": User, "State": State,
+                     "City": City, "Amenity": Amenity, "Place": Place,
+                     "Review": Review}
+        args = line.split()
+        if len(args) == 0:
             print("** class name missing **")
             return
-        elif len(argsU) == 1:
-            print("** instance id missing **")
-            return
-        elif len(argsU) == 2:
-            print("** attribute name missing **")
-            return
-        elif len(argsU) == 3:
-            print("** value missing **")
-            return
-        elif argsU[0] not in self.classes:
+        class_name = args[0]
+        if class_name not in a_classes.keys():
             print("** class doesn't exist **")
             return
-        keyI = argsU[0] + "." + argsU[1]
-        dict = models.storage.all()
-        try:
-            instanceU = dict[keyI]
-        except KeyError:
-            print("** no instance found **")
+        if len(args) < 2:
+            print("** instance id missing **")
             return
-        try:
-            type = type(getattr(instanceU, argsU[2]))
-            argsU[3] = type(argsU[3])
-        except AttributeError:
-            pass
-        setattr(instanceU, argsU[2], argsU[3])
-        models.storage.save()
+        else:
+            class_id = args[1]
+            obj_key = f"{class_name}.{class_id}"
+            inst_keys = storage.all().keys()
+            if obj_key not in inst_keys:
+                print("** no instance found **")
+                return
+            if len(args) < 3:
+                print("** attribute name missing **")
+                return
+
+            if len(args) < 4:
+                print("** value missing **")
+                return
+
+            if line[2] in ['id', 'created_at', 'updated_at']:
+                return
+
+            attr_name = args[2]
+            attr_value = args[3]
+            obj_dict = storage.all()[obj_key].to_dict()
+            obj_dict.pop("__class__")
+            obj = eval(class_name)(**obj_dict)
+            if hasattr(obj, attr_name):
+                type_name = type(attr_name)
+                attr_value = type_name(args[3])
+            setattr(obj, attr_name, attr_value)
+            storage.all()[obj_key] = obj
+            obj.save()
 
     def do_count(self, line):
         """Count instance"""
