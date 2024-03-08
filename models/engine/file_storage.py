@@ -17,16 +17,8 @@ class FileStorage():
 
     __file_path = "file.json"
     __objects = {}
-    supported_classes = {
-        "BaseModel": BaseModel,
-        "Amenity": Amenity,
-        "City": City,
-        "Place": Place,
-        "Review": Review,
-        "State": State,
-        "User": User
-    }
 
+    
     def all(self):
         """ returns the dictionary __objects """
         return self.__objects
