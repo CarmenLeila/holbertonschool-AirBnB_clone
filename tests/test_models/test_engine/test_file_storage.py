@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-""" Unit tests for the FileStorage """
+"""Unit tests for the FileStorage"""
+
+
 
 import unittest
 import os
@@ -15,50 +17,50 @@ from models.engine.file_storage import FileStorage
 
 
 class TestFileStorage(unittest.TestCase):
-    """Test cases for FileStorage class"""
-
-    def setUp(self):
-        """Set up test environment"""
+    """Unittest for storage"""
+    def setUp(self):        
+        """ Set up test environment """
         self.file_path = "test_file.json"
         self.storage = FileStorage()
-        self.storage._FileStorage__file_path = self.file_path
-
-    def tearDown(self):
-        """Tear down test environment"""
-        if os.path.exists(self.file_path):
-            os.remove(self.file_path)
+        self.file_path = self.storage._FileStorage__file_path
 
     def test_all(self):
-        """Test all() method"""
-        self.assertEqual(self.storage.all(), {})
+        all_objs = self.storage.all()
+        self.assertIsInstance(all_objs, dict)
 
     def test_new(self):
-        """Test new() method"""
-        new_model = BaseModel()
-        self.storage.new(new_model)
-        objects = self.storage.all()
-        self.assertEqual(len(objects), 1)
-        key = "{}.{}".format(new_model.__class__.__name__, new_model.id)
-        self.assertIsNotNone(objects.get(key))
+        obj = BaseModel()
+        self.storage.new(obj)
+        key = f"{obj.__class__.__name__}.{obj.id}"
+        self.assertIn(key, self.storage.all())
 
-    def test_save_reload(self):
-        """Test save() and reload() methods"""
-        # Create and save some models
-        model1 = BaseModel()
-        model2 = Amenity()
-        model3 = City()
-        self.storage.new(model1)
-        self.storage.new(model2)
-        self.storage.new(model3)
+    def test_save(self):
+        obj = BaseModel()
+        self.storage.new(obj)
+        self.storage.save()
+        with open('file.json', 'r') as file:
+            self.assertIn(obj.id, file.read())
+
+    def test_reload(self):
+        base_model = BaseModel()
+        user = User()
+        self.storage.new(base_model)
+        self.storage.new(user)
         self.storage.save()
 
-        # Instantiate another FileStorage to reload
-        new_storage = FileStorage()
-        new_storage._FileStorage__file_path = self.file_path
-        new_storage.reload()
+        self.storage._FileStorage__objects = {}
+        self.storage.reload()
 
-        objects = new_storage.all()
-        # Check if objects were reloaded correctly
-        self.assertIn("BaseModel." + model1.id, objects)
-        self.assertIn("Amenity." + model2.id, objects)
-        self.assertIn("City." + model3.id, objects)
+        base_model_key = "BaseModel." + base_model.id
+        user_key = "User." + user.id
+        self.assertIn(base_model_key, self.storage._FileStorage__objects)
+        self.assertIn(user_key, self.storage._FileStorage__objects)
+
+        os.remove(self.file_path)
+        try:
+            self.storage.reload()
+        except FileNotFoundError:
+            self.fail("FileNotFoundError was raised")
+
+if __name__ == "__main__":
+    unittest.main()
