@@ -43,11 +43,12 @@ class FileStorage():
 
     def reload(self):
         """ deserializes the JSON file to __objects """
-        if not os.path.exists(self.__file_path) or
-            os.path.getsize(self.__file_path):
+        if not os.path.exists(self.__file_path):
             return
         try:
             with open(self.__file_path, "r", encoding='utf-8') as file:
+                if os.path.getsize(self.__file_path) == 0:
+                    return
                 data = json.load(file)
                 for key, value in data.items():
                     class_name = key.split(".")[0]
