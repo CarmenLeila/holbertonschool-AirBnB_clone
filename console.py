@@ -37,7 +37,7 @@ class HBNBCommand(cmd.Cmd):
         """Print help message for the help command"""
         print("Get help on commands.")
     def do_create(self, line):
-        """Creates a new instance of BaseModel,saves it"""
+        """To create a new instance of the class BaseModel"""
         from models.base_model import BaseModel
         from models.user import User
         from models.state import State
@@ -61,7 +61,8 @@ class HBNBCommand(cmd.Cmd):
             print(new_instance.id)
 
     def do_show(self, line):
-        """Prints the string representation of an instance based on the class name and ID"""
+        """To print the string representation of an instance based
+        on the class name and id"""
         from models.base_model import BaseModel
         from models.user import User
         from models.state import State
@@ -94,47 +95,80 @@ class HBNBCommand(cmd.Cmd):
             print(str(instance))
 
     def do_destroy(self, line):
-        """Deletes an instance based on a class name + ID"""
-        args = shlex.split(line)
-        if len(args) == 0:
-            print("**class name missing **")
+        """destroy command"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.review import Review
+
+        args = line.split()
+
+        a_classes = {"BaseModel": BaseModel, "User": User, "State": State,
+                     "City": City, "Amenity": Amenity, "Place": Place,
+                     "Review": Review}
+        if len(args) < 1:
+            print("** class name missing **")
             return
-        elif len(args) == 1:
-            print("** instance id missing **")
-            return
-        elif len(args) not in models.classes:
+        elif not args[0] in a_classes:
             print("** class doesn't exist **")
             return
+        elif len(args) < 2:
+            print("** instance id missing **")
+            return
+        elif args[0] + '.' + args[1] not in storage.all().keys():
+            print("** no instance found **")
+            return
         else:
-            dict = models.storage.all()
-            # Key has format <className>.id
-            key = args[0] + '.' + args[1]
-            if key in dict:
-                del dict[key]
-                models.storage.save()
-            else:
-                print("** no instance found **")
+            obj_key = args[0] + '.' + args[1]
+            storage.all().pop(obj_key)
+            storage.save()
 
     def do_all(self, line):
-        """Prints all string representation of all instances based or not on the class name"""
-        all_objects = models.storage.all()
+        """all command"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.review import Review
 
-        if not line:
-            print([str(instance) for instance in all_objects.values()])
-        else:
-            args = shlex.split(line)
+        a_classes = {"BaseModel": BaseModel, "User": User, "State": State,
+                     "City": City, "Amenity": Amenity, "Place": Place,
+                     "Review": Review}
+        args = line.split()
+
+        if len(args) == 1:
             class_name = args[0]
-
-            if class_name not in models.classes:
+            if class_name not in a_classes:
                 print("** class doesn't exist **")
                 return
 
-            for instance in all_objects.values():
-                if type(instance).__name__ == class_name:
-                    print(str(instance))
+            objects = storage.all().values()
+            result = []
+            class_inst = eval(class_name)
+            for obj in objects:
+                if isinstance(obj, class_inst):
+                    result.append(str(str(obj)))
+
+            if len(result) != 0:
+                print(result)
+            else:
+                print("** no instance found **")
+        else:
+            objects = storage.all().values()
+            _list = []
+            for obj in objects:
+                _list.append(str(str(obj)))
+            print(_list)
 
     def do_update(self, line):
-        """Updates an instance based on the class name and id by adding or updating attribute"""
+        """Updates an instance based on the class name and id
+        by adding or updating attribute
+        """
         from models.base_model import BaseModel
         from models.user import User
         from models.state import State
