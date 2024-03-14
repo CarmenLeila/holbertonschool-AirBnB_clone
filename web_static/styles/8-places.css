@@ -1,0 +1,79 @@
+/* CSS for places's style */
+
+.places {
+	text-align: center;
+	padding-bottom: 100px;
+}
+.places h1 {
+	text-align: left;
+	font-size: 30px;
+	margin-top: 30px;
+	margin-left: 20px;
+	margin-bottom: 2px;
+}
+.places article {
+	display: inline-block;
+	width: 390px;
+	padding: 20px;
+	margin: 20px;
+	border: solid 1px #FF5A5F;
+	border-radius: 4px;
+	position: relative;
+	min-height: 390px;
+	vertical-align: top;
+}
+.places article h2 {
+	font-size: 30px;
+	text-align: center;
+	margin-bottom: 35px;
+	margin-top: 15px;
+}
+.price_by_night {
+	color: #FF5A5F;
+	border: solid 4px #FF5A5F;
+	border-radius: 50%;
+	min-width: 60px;
+	height: 60px;
+	font-size: 30px;
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	padding: 7px;
+	line-height: 60px;
+}
+.information {
+	height: 80px;
+	border-top: solid 1px #DDDDDD;
+	border-bottom: solid 1px #DDDDDD;
+}
+.max_guest {
+	background-image: url("../images/icon_group.png");
+	background-repeat: no-repeat;
+	background-position: center 5px;
+}
+.number_rooms {
+	background-image: url("../images/icon_bed.png");
+	background-repeat: no-repeat;
+	background-position: center 5px;
+}
+.number_bathrooms {
+	background-image: url("../images/icon_bath.png");
+	background-repeat: no-repeat;
+	background-position: center 5px;
+}
+.max_guest, .number_rooms, .number_bathrooms {
+	width: 100px;
+	display: inline-block;
+	line-height: 100px;
+}
+.user p {
+	text-align: left;
+	margin-bottom: 2px;
+	padding: 0 5px 0 5px;
+}
+.description p {
+	text-align: justify;
+	margin-top: 5px;
+	padding: 0 5px 0 5px;
+	line-height: 20px;
+}
